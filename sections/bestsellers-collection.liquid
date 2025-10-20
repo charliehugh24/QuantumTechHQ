@@ -1,0 +1,54 @@
+<section class="qt-container">
+  {% if section.settings.title != blank %}
+    <div class="qt-rowhead">
+      <span class="qt-pill">{{ section.settings.title }}</span>
+    </div>
+  {% endif %}
+
+  {% assign col = collections[section.settings.collection] %}
+  <div class="qt-grid">
+    {% if col and col.products_count > 0 %}
+      {% for product in col.products limit: section.settings.limit %}
+        <article class="qt-card qt-card-hover">
+          {% if section.settings.show_badge %}
+            <span class="qt-badge">{{ section.settings.badge_text }}</span>
+          {% endif %}
+          <a href="{{ product.url }}">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | image_url: width: 700 }}" alt="{{ product.title }}">
+            {% endif %}
+            <h3 class="qt-card-title">{{ product.title }}</h3>
+          </a>
+          <div class="qt-price">{{ product.price | money }}</div>
+          <form method="post" action="/cart/add">
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <button class="qt-btn" type="submit">Add to cart</button>
+          </form>
+        </article>
+      {% endfor %}
+    {% else %}
+      {% for i in (1..3) %}
+        <article class="qt-card">
+          <div style="height:180px;background:#eef2ff;border-radius:12px;"></div>
+          <h3 class="qt-card-title">Example Product {{ i }}</h3>
+          <div class="qt-price">$99.99</div>
+          <a class="qt-btn" href="#">Preview</a>
+        </article>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bestsellers collection",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Section label", "default": "Shop Bestsellers" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "limit", "min": 3, "max": 12, "step": 1, "default": 6, "label": "Products to show" },
+    { "type": "checkbox", "id": "show_badge", "label": "Show badge on cards", "default": true },
+    { "type": "text", "id": "badge_text", "label": "Badge text", "default": "Top" }
+  ],
+  "presets": [{ "name": "Bestsellers collection" }]
+}
+{% endschema %}
