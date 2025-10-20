@@ -1,0 +1,31 @@
+<section>
+  <div class="qt-container" style="padding: 24px 1rem;">
+    <h1 style="margin:0 0 8px 0">{{ collection.title }}</h1>
+    {% if collection.description != blank %}
+      <p style="color:var(--muted)">{{ collection.description }}</p>
+    {% endif %}
+  </div>
+  <div class="qt-grid">
+    {% for product in collection.products %}
+      <article class="qt-card">
+        <a href="{{ product.url }}">
+          {% if product.featured_image %}
+            <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}">
+          {% endif %}
+          <h3 style="margin:.5rem 0 .25rem 0; font-size: 1rem;">{{ product.title }}</h3>
+        </a>
+        <div class="qt-price">{{ product.price | money }}</div>
+        {% if product.selected_or_first_available_variant %}
+          <form method="post" action="/cart/add">
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <button class="qt-btn" type="submit">Add to cart</button>
+          </form>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Main collection", "settings": [], "presets": [{ "name": "Main collection" }] }
+{% endschema %}

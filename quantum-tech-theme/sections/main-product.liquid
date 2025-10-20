@@ -1,0 +1,28 @@
+<section class="qt-container" style="padding:24px 1rem;">
+  <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:24px;">
+    <div>
+      {% if product.featured_image %}
+        <img src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.title }}" style="width:100%;border-radius:12px;">
+      {% endif %}
+    </div>
+    <div>
+      <h1 style="margin:.25rem 0">{{ product.title }}</h1>
+      <div class="qt-price" style="margin:.25rem 0 1rem 0">{{ product.price | money }}</div>
+      <div style="color:var(--muted);margin-bottom:1rem;">{{ product.description }}</div>
+      {% form 'product', product %}
+        <select name="id" style="padding:.5rem;border-radius:10px;border:1px solid #dfe3ea;margin-bottom:.5rem;">
+          {% for variant in product.variants %}
+            <option {% if variant == product.selected_or_first_available_variant %}selected{% endif %} value="{{ variant.id }}">
+              {{ variant.title }} - {{ variant.price | money }}
+            </option>
+          {% endfor %}
+        </select>
+        <button class="qt-cta" type="submit">Add to cart</button>
+      {% endform %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Main product", "settings": [], "presets": [{ "name": "Main product" }] }
+{% endschema %}
